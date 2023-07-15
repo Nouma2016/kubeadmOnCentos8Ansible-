@@ -1,0 +1,30 @@
+--- 
+   - name: Fetch the join command we wrote to a file in previous step and move it to the 1st worker node.
+     become: yes
+     copy: 
+       src: /etc/kube_join_command  
+       dest: /etc/kube_join_command
+#     synchronize: src=/etc/kube_join_command  dest=/etc/kube_join_command
+       mode: 0777
+#     delegate_to: master
+     when: "'worker1' in inventory_hostname"
+   
+   - name: Fetch the join command we wrote to a file in previous step and move it to the 2nd worker node.
+     become: yes
+     copy:
+#      synchronize: src=/etc/kube_join_command  dest=/etc/kube_join_command
+       src: /etc/kube_join_command
+       dest: /etc/kube_join_command 
+       mode: 0777
+#     delegate_to: master
+     when: "'worker2' in inventory_hostname"
+
+   - name: Join the 1st Worker node to the cluster.
+     become: yes
+     command: sh /etc/kube_join_command
+     when: "'worker1' in inventory_hostname"
+   
+   - name: Join the 2nd Worker node to the cluster.
+     become: yes
+     command: sh /etc/kube_join_command
+     when: "'worker2' in inventory_hostname"

@@ -1,4 +1,11 @@
 [k8snodes]
-k8smaster01
-k8snode01
-k8snode02
+ master ansible_host=x.x.x.x
+ 
+ worker1 ansible_host=x.x.x.x
+ worker2 ansible_host=x.x.x.x
+ 
+[all:vars]
+# Upadte this to match with your system
+#ansible_python_interpreter=/usr/local/bin/python3
+ansible_user=your_user
+ansible_ssh_private_key_file=absolute_path_to_yoyr_private_key

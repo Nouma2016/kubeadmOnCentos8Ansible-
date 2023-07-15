@@ -1,4 +1,5 @@
----
+
+
 - name: Add docker repository
   get_url:
     url: https://download.docker.com/linux/centos/docker-ce.repo
@@ -23,7 +24,13 @@
 - name: Set cgroup driver as systemd
   ansible.builtin.template:
     src: daemon.json.j2
-    dest: /etc/docker/daemon.json
+    dest: /etc/containerd/daemon.json
+
+- name: Delete containerd config file
+  become: yes
+  ansible.builtin.file:
+    state: absent
+    path: /etc/containerd/config.toml
 
 - name: Start and enable containerd service
   ansible.builtin.systemd:

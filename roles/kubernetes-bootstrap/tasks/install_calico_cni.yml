@@ -1,0 +1,8 @@
+---
+- name: Install Calico CNI
+  become: yes
+  become_user: kubeadmin
+  shell: kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml 
+  args:
+    chdir: $HOME
+  when: "'master' in inventory_hostname"

@@ -2,9 +2,9 @@
 - name: Add the OS specific variables
   include_vars: "{{ item }}"
   with_first_found:
-    - "{{ ansible_os_family }}{{ ansible_distribution_major_version }}.yml"
-    - "{{ ansible_os_family }}.yml"
-
+    - files:
+        - "{{ ansible_os_family }}{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_os_family }}.yml"
 - name: Include Pre-reqs setup task
   include: pre_setup.yml
 
@@ -35,6 +35,15 @@
 - name: Include task to install  k8s packages
   include: install_k8s_packages.yml
 
+#- name: Include task to install  Calico CNI
+#  include: install_calico_cni.yml
+
 - name: Include task to configure firewalld
   include: configure_firewalld.yml
   when: configure_firewalld
+
+- name: Include task to start the cluster
+  include: master-setup.yml
+
+- name: Include task to setup workers
+  include: workers-setup.yml
