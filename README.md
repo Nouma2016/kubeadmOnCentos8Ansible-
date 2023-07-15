@@ -1,5 +1,4 @@
 
-#kubeadmOnCentos8Ansible-
 ## Playbook info
 
 This playbook helps you automate the standard Kubernetes bootstrapping, CNI installation and cluster setup controlplane and workers setup.
@@ -114,7 +113,7 @@ $ vim roles/kubernetes-bootstrap/tasks/configure_firewalld.yml
 If your master nodes doesn't contain `master` and nodes doesn't have `node or worker` as part of its hostname, update the file to reflect your naming pattern. My nodes are named like below:
 
 ```
-k8smaster01
+k8smaster
 k8sworker01
 k8sworker02
 ....
@@ -142,12 +141,12 @@ Execution should be successful without errors:
 
 ```
 TASK [kubernetes-bootstrap : Reload firewalld] *********************************************************************************************************
-changed: [k8smaster01]
-changed: [k8snode01]
-changed: [k8snode02]
+changed: [k8smaster]
+changed: [k8sworker01]
+changed: [k8sworker02]
 
 PLAY RECAP *********************************************************************************************************************************************
-k8smaster01                : ok=23   changed=3    unreachable=0    failed=0    skipped=11   rescued=0    ignored=0
-k8snode01                  : ok=23   changed=3    unreachable=0    failed=0    skipped=11   rescued=0    ignored=0
-k8snode02                  : ok=23   changed=3    unreachable=0    failed=0    skipped=11   rescued=0    ignored=0
+master                     : ok=33   changed=26   unreachable=0    failed=0    skipped=25   rescued=0    ignored=0
+k8sworker01                    : ok=27   changed=20   unreachable=0    failed=0    skipped=30   rescued=0    ignored=0
+k8sworker02                    : ok=27   changed=20   unreachable=0    failed=0    skipped=30   rescued=0    ignored=0
 ```
