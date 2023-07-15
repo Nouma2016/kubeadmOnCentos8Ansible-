@@ -146,7 +146,7 @@ changed: [k8sworker01]
 changed: [k8sworker02]
 
 PLAY RECAP *********************************************************************************************************************************************
-master                     : ok=33   changed=26   unreachable=0    failed=0    skipped=25   rescued=0    ignored=0
+master                         : ok=33   changed=26   unreachable=0    failed=0    skipped=25   rescued=0    ignored=0
 k8sworker01                    : ok=27   changed=20   unreachable=0    failed=0    skipped=30   rescued=0    ignored=0
 k8sworker02                    : ok=27   changed=20   unreachable=0    failed=0    skipped=30   rescued=0    ignored=0
 ```
