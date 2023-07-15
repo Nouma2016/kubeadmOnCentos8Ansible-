@@ -1,8 +1,8 @@
-## Role info
 
-> This playbook is not for fully setting up a Kubernetes Cluster.
+#kubeadmOnCentos8Ansible-
+## Playbook info
 
-It only helps you automate the standard Kubernetes bootstrapping pre-reqs.
+This playbook helps you automate the standard Kubernetes bootstrapping, CNI installation and cluster setup controlplane and workers setup.
 
 ## Supported OS
 
@@ -20,29 +20,19 @@ This role contains tasks to:
 
 - Install basic packages required
 - Setup standard system requirements - Disable Swap, Modify sysctl, Disable SELinux
-- Install and configure a container runtime of your Choice - cri-o, Docker, Containerd
+- Install and configure a container runtime of your Choice - cri-o, Docker, Containerd (Default)
 - Install the Kubernetes packages - kubelet, kubeadm and kubectl
 - Configure Firewalld on Kubernetes Master and Worker nodes (Only Kubernetes <1.19 version)
+- Install Calico CNI
+- Cluster init
+- Join Workers nodes to the cluster
 
 ## How to use this role
 
 - Clone the Project:
 
 ```
-$ git clone https://github.com/jmutai/k8s-pre-bootstrap.git
-```
-
-- Configure `/etc/hosts` file in your bastion or workstation with all nodes and ip addresses. Example:
-
-```
-192.168.200.10 k8smaster01.example.com k8smaster01
-192.168.200.11 k8smaster02.example.com k8smaster02
-192.168.200.12 k8smaster03.example.com k8smaster03
-
-192.168.200.13 k8snode01.example.com k8snode01
-192.168.200.14 k8snode02.example.com k8snode02
-192.168.200.15 k8snode03.example.com k8snode03
-192.168.200.16 k8snode04.example.com k8snode04
+$ git clone https://github.com/Nouma2016/kubeadmOnCentos8Ansible-.git
 ```
 
 - Update your inventory, for example:
@@ -50,13 +40,11 @@ $ git clone https://github.com/jmutai/k8s-pre-bootstrap.git
 ```
 $ vim hosts
 [k8snodes]
-k8smaster01
-k8smaster02
-k8smaster03
-k8snode01
-k8snode02
-k8snode03
-k8snode04
+k8smaster
+k8worker01
+k8sworker02
+k8worker03
+k8sworker04
 ```
 
 - Update variables in playbook file
@@ -70,12 +58,12 @@ $ vim k8s-prep.yml
   become_method: sudo
   #gather_facts: no
   vars:
-    k8s_version: "1.26"                                  # Kubernetes version to be installed
+    k8s_version: "1.27"                                  # Kubernetes version to be installed
     selinux_state: permissive                            # SELinux state to be set on k8s nodes
     timezone: "Africa/Nairobi"                           # Timezone to set on all nodes
     k8s_cni: calico                                      # calico, flannel
-    container_runtime: cri-o                             # docker, cri-o, containerd
-    pod_network_cidr: "192.168.0.0/16"                   # pod subnet if using cri-o runtime
+    container_runtime: containerd                             # docker, cri-o, containerd
+    pod_network_cidr: "10.244.0.0/16"                   # pod subnet
     configure_firewalld: false                           # true / false (keep it false, k8s>1.19 have issues with firewalld)
     # Docker proxy support
     setup_proxy: false                                   # Set to true to configure proxy
@@ -127,8 +115,8 @@ If your master nodes doesn't contain `master` and nodes doesn't have `node or wo
 
 ```
 k8smaster01
-k8smaster02
 k8sworker01
+k8sworker02
 ....
 ```
 
@@ -140,16 +128,7 @@ $ ansible-playbook --syntax-check k8s-prep.yml -i hosts
 playbook: k8s-prep.yml
 ```
 
-Playbook executed as root user - with ssh key:
 
-```
-$ ansible-playbook -i hosts k8s-prep.yml
-```
-
-Playbook executed as root user - with password:
-
-```
-$ ansible-playbook -i hosts k8s-prep.yml --ask-pass
 ```
 
 Playbook executed as sudo user - with password:
@@ -158,18 +137,7 @@ Playbook executed as sudo user - with password:
 $ ansible-playbook -i hosts k8s-prep.yml --ask-pass --ask-become-pass
 ```
 
-Playbook executed as sudo user - with ssh key and sudo password:
-
 ```
-$ ansible-playbook -i hosts k8s-prep.yml --ask-become-pass
-```
-
-Playbook executed as sudo user - with ssh key and passwordless sudo:
-
-```
-$ ansible-playbook -i hosts k8s-prep.yml --ask-become-pass
-```
-
 Execution should be successful without errors:
 
 ```
