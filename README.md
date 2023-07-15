@@ -128,15 +128,12 @@ playbook: k8s-prep.yml
 ```
 
 
-```
-
 Playbook executed as sudo user - with password:
 
 ```
 $ ansible-playbook -i hosts k8s-prep.yml --ask-pass --ask-become-pass
 ```
 
-```
 Execution should be successful without errors:
 
 ```
